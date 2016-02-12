@@ -3,10 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "adminUsername": {
-            "value": "GEN-USER"
+            "value": "azureadmin"
         },
-        "adminPassword": {
-            "value": "GEN-PASSWORD"
+        "environment": {
+            "value": "prd"
+        },
+        "deploymentPrefix": {
+            "value": "rpx"
+        },
+        "localGatewayIpAddress": {
+            "value": "111.222.111.222"
+        },
+        "localAddressPrefix": {
+            "value": "172.16.0.0/16"
+        },
+        "sharedKey": {
+            "value": "WowChangeThisDude"
         }
     }
 }
