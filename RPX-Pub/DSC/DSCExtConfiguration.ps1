@@ -7,7 +7,6 @@ Import-DscResource -ModuleName PSDesiredStateConfiguration
 
 Node $nodeName
   {
-
     WindowsFeature WebServerRole
     {
       Name = "Web-Server"

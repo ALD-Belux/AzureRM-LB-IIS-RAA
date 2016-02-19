@@ -1,24 +1,24 @@
 ﻿{
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "adminUsername": {
-            "value": "azureadmin"
-        },
-        "environment": {
-            "value": "prd"
-        },
-        "deploymentPrefix": {
-            "value": "rpx"
-        },
-        "localGatewayIpAddress": {
-            "value": "111.222.111.222"
-        },
-        "localAddressPrefix": {
-            "value": "172.16.0.0/16"
-        },
-        "sharedKey": {
-            "value": "WowChangeThisDude"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "CHANGE-ME"
+    },
+    "environment": {
+      "value": "prd"
+    },
+    "deploymentPrefix": {
+      "value": "rpx"
+    },
+    "localGatewayIpAddress": {
+      "value": "CHANGE-ME"
+    },
+    "localAddressPrefix": {
+      "value": "172.28.1.0/24"
+    },
+    "sharedKey": {
+      "value": "CHANGE-ME"
     }
+  }
 }
