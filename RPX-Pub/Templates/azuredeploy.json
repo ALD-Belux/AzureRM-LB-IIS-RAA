@@ -136,6 +136,7 @@
     "vNetSubnet1Name": "[concat(variables('subnetName'), '1')]",
     "vNetSubnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables ('vNetSubnet1Name'))]",
     "vNetSubnet1Prefix": "172.28.128.0/24",
+    "vNetSubnet1Netmask": "24",
     "vNetSubnet1IPBase": "172.28.128.1",
     "gatewaySubnetPrefix": "172.28.131.249/29",
     "publicIPAddressType": "Dynamic",
@@ -175,8 +176,7 @@
     "wadperfcounters2": "<PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\% Disk Read Time\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk active read time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\% Disk Write Time\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk active write time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Transfers/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Reads/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk read operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Writes/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk write operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk read speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk write speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\LogicalDisk(_Total)\\% Free Space\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk free space (percentage)\" locale=\"en-us\"/></PerformanceCounterConfiguration></PerformanceCounters>",
     "wadcfgxstart": "[concat(variables('wadlogs'), variables('wadperfcounters1'), variables('wadperfcounters2'), '<Metrics resourceId=\"')]",
     "wadmetricsresourceid": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name , '/providers/', 'Microsoft.Compute/virtualMachines/')]",
-    "wadcfgxend": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>",
-      "DSCdnsConfigurationFunction": "DSCdnsConfiguration.ps1\\Main"
+    "wadcfgxend": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>"
   },
   "resources": [
     {
@@ -584,10 +584,21 @@
               "sasToken": "[parameters('_artifactsLocationSasToken')]",
               "configurationFunction": "[variables('DSCExtConfigurationFunction')]",
               "properties": {
-                "nodeName": "[concat(variables('vmNameBase'), copyindex(1))]"
+                "nodeName": "[concat(variables('vmNameBase'), copyindex(1))]",
+                "ipAddress": "[reference(concat(variables('nicNamePrefix'), copyindex(1))).ipConfigurations[0].properties.privateIPAddress]",
+                "netMask": "[int(variables('vNetSubnet1Netmask'))]",
+                "gateway": "[variables('vNetSubnet1IPBase')]",
+                "storageCreds": {
+                  "UserName": "[variables('vhdStorageName')]",
+                  "Password": "PrivateSettingsRef:StoragePassword"
+                }
               }
             },
-            "protectedSettings": { }
+            "protectedSettings": {
+              "Items": {
+                "StoragePassword": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('vhdStorageName')), '2015-06-15').key1]"
+              }
+            }
           }
         },
         {
@@ -616,35 +627,7 @@
               "storageAccountEndPoint": "https://core.windows.net"
             }
           }
-        },
-          {
-              "name": "DSCdns",
-              "type": "extensions",
-              "location": "[resourceGroup().location]",
-              "apiVersion": "2015-06-15",
-              "dependsOn": [
-                  "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmNameBase'), copyindex(1)))]"
-              ],
-              "tags": {
-                  "displayName": "DSCdns"
-              },
-              "properties": {
-                  "publisher": "Microsoft.Powershell",
-                  "type": "DSC",
-                  "typeHandlerVersion": "2.9",
-                  "autoUpgradeMinorVersion": true,
-                  "settings": {
-                      "modulesUrl": "[concat(parameters('_artifactsLocation'), '/', 'dsc.zip')]",
-                      "sasToken": "[parameters('_artifactsLocationSasToken')]",
-                      "configurationFunction": "[variables('DSCdnsConfigurationFunction')]",
-                    "properties": {
-                      "nodeName": "[concat(variables('vmNameBase'), copyindex(1))]",
-                      "ipAddress": "[reference(concat(variables('nicNamePrefix'), copyindex(1))).ipConfigurations[0].properties.privateIPAddress]"
-                    }
-                  },
-                  "protectedSettings": { }
-              }
-          }
+        }
       ]
     }
 
