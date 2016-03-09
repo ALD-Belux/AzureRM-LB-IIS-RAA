@@ -25,6 +25,7 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
+    <Folder Include="DSC\Resources\" />
     <Folder Include="Tools\" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +36,13 @@
     <Content Include="Templates\azuredeploy.json" />
     <Content Include="Templates\azuredeploy.parameters.json" />
     <Content Include="DSC\DSCExtConfiguration.ps1" />
+    <None Include="DSC\Modules\xCertificate\DSCResources\MSFT_xCertReq\MSFT_xCertReq.psm1" />
+    <None Include="DSC\Modules\xCertificate\DSCResources\MSFT_xCertReq\MSFT_xCertReq.schema.mof" />
+    <None Include="DSC\Modules\xCertificate\DSCResources\MSFT_xPfxImport\MSFT_xPfxImport.psm1" />
+    <None Include="DSC\Modules\xCertificate\DSCResources\MSFT_xPfxImport\MSFT_xPfxImport.schema.mof" />
+    <None Include="DSC\Modules\xCertificate\en-US\xPDT.strings.psd1" />
+    <None Include="DSC\Modules\xCertificate\xCertificate.psd1" />
+    <None Include="DSC\Modules\xCertificate\xPDT.psm1" />
     <None Include="DSC\Modules\xNetworking\DSCResources\MSFT_xDefaultGatewayAddress\MSFT_xDefaultGatewayAddress.psm1" />
     <None Include="DSC\Modules\xNetworking\DSCResources\MSFT_xDefaultGatewayAddress\MSFT_xDefaultGatewayAddress.schema.mof" />
     <None Include="DSC\Modules\xNetworking\DSCResources\MSFT_xDhcpClient\MSFT_xDhcpClient.psm1" />
@@ -79,6 +87,10 @@
     <None Include="DSC\Modules\xNetworking\Templates\integration_template.ps1" />
     <None Include="DSC\Modules\xNetworking\Templates\unit_template.ps1" />
     <None Include="DSC\Modules\xNetworking\xNetworking.psd1" />
+    <None Include="DSC\Modules\xPendingReboot\DSCResources\MSFT_xPendingReboot\MSFT_xPendingReboot.psm1" />
+    <None Include="DSC\Modules\xPendingReboot\DSCResources\MSFT_xPendingReboot\MSFT_xPendingReboot.schema.mof" />
+    <None Include="DSC\Modules\xPendingReboot\README.md" />
+    <None Include="DSC\Modules\xPendingReboot\xPendingReboot.psd1" />
     <None Include="DSC\Modules\xPSDesiredStateConfiguration\DSCResources\MSFT_xArchive\en-us\ArchiveResources.psd1" />
     <None Include="DSC\Modules\xPSDesiredStateConfiguration\DSCResources\MSFT_xArchive\MSFT_xArchive.psm1" />
     <None Include="DSC\Modules\xPSDesiredStateConfiguration\DSCResources\MSFT_xArchive\MSFT_xArchive.schema.mof" />

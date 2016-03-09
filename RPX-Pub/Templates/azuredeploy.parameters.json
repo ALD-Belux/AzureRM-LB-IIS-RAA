@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
          "adminUsername": {
-            "value": "azureadmin"
+            "value": ""
         },
         "environment": {
             "value": "prd"
@@ -12,13 +12,34 @@
             "value": "rpx"
         },
         "localGatewayIpAddress": {
-            "value": "100.101.102.103"
+            "value": ""
         },
       "localAddressPrefix": {
-        "value": "172.16.0.0/24"
+        "value": ""
       },
       "sharedKey": {
-        "value": "ThisIsMySharedKey"
-      }
+        "value": ""
+      },
+        "dmzDnsZone": {
+            "value": ""
+        },
+        "dmzDnsIP": {
+            "value": ""
+        },
+        "vmSize": {
+            "value": "Standard_A1"
+        },
+        "adminPassword": {
+            "value": ""
+        },
+        "createsharewebhookuri": {
+            "value": ""
+        },
+        "CertificatePassword": {
+            "value": ""
+        },
+        "CertificateBlobURI": {
+            "value": ""
+        }
     }
 }

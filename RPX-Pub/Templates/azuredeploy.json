@@ -33,6 +33,20 @@
         "PolicyBased"
       ]
     },
+    "dmzDnsZone": {
+      "type": "string",
+      "defaultValue": "internal.dmz",
+      "metadata": {
+        "description": "Domain name on premise DMZ DNS"
+      }
+    },
+    "dmzDnsIP": {
+      "type": "string",
+      "defaultValue": "10.10.10.10",
+      "metadata": {
+        "description": "Domain name on premise DMZ IP"
+      }
+    },
     "localGatewayIpAddress": {
       "type": "string",
       "defaultValue": "70.90.80.100",
@@ -108,6 +122,24 @@
       "defaultValue": 2,
       "metadata": {
         "description": "Number of VM instances to be created behind load balancer"
+      }
+    },
+    "createsharewebhookuri": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Azure Automation webhook to create a file share"
+      }
+    },
+    "CertificatePassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "PFX Certificate password"
+      }
+    },
+    "CertificateBlobURI": {
+      "type": "string",
+      "metadata": {
+        "description": "PFX Certificate Location"
       }
     },
     "_artifactsLocation": {
@@ -544,13 +576,19 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicNamePrefix'), copyindex(1)))]"
             }
           ]
-        }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://', variables('vhdStorageName'),'.blob.core.windows.net')]"
+          }
+        }        
       },
       "resources": [
         {
           "apiVersion": "2015-06-15",
           "type": "extensions",
-          "name": "vmBGInfo",
+          "name": "Microsoft.Compute.BGInfo",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmNameBase'), copyindex(1)))]"
@@ -564,7 +602,7 @@
           }
         },
         {
-          "name": "DSCExt",
+          "name": "Microsoft.Powershell.DSC",
           "type": "extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
@@ -572,12 +610,12 @@
             "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmNameBase'), copyindex(1)))]"
           ],
           "tags": {
-            "displayName": "DSCExt"
+            "displayName": "Microsoft.Powershell.DSC"
           },
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.9",
+            "typeHandlerVersion": "2.14",
             "autoUpgradeMinorVersion": true,
             "settings": {
               "modulesUrl": "[concat(parameters('_artifactsLocation'), '/', 'dsc.zip')]",
@@ -585,24 +623,34 @@
               "configurationFunction": "[variables('DSCExtConfigurationFunction')]",
               "properties": {
                 "nodeName": "[concat(variables('vmNameBase'), copyindex(1))]",
+                "dmzDnsIP": "[parameters('dmzDnsIP')]",
+                "dmzDnsZone": "[parameters('dmzDnsZone')]",
                 "ipAddress": "[reference(concat(variables('nicNamePrefix'), copyindex(1))).ipConfigurations[0].properties.privateIPAddress]",
                 "netMask": "[int(variables('vNetSubnet1Netmask'))]",
                 "gateway": "[variables('vNetSubnet1IPBase')]",
+                "ResourceGroupName": "[resourceGroup().name]",
+                "createShareWebhook": "[parameters('createsharewebhookuri')]",
                 "storageCreds": {
                   "UserName": "[variables('vhdStorageName')]",
                   "Password": "PrivateSettingsRef:StoragePassword"
-                }
+                },
+                "CertificateCreds": {
+                  "UserName": "Whatevere",
+                  "Password": "PrivateSettingsRef:CertificatePassword"
+                },
+                "CertificateBlob": "[parameters('CertificateBlobURI')]"
               }
             },
             "protectedSettings": {
               "Items": {
-                "StoragePassword": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('vhdStorageName')), '2015-06-15').key1]"
+                "StoragePassword": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('vhdStorageName')), '2015-06-15').key1]",
+                "CertificatePassword": "[parameters('CertificatePassword')]"
               }
             }
           }
         },
         {
-          "name": "Microsoft.Insights.VMDiagnosticsSettings",
+          "name": "Microsoft.Insights.IaaSDiagnostics",
           "type": "extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
@@ -610,7 +658,7 @@
             "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmNameBase'), copyindex(1)))]"
           ],
           "tags": {
-            "displayName": "ADiagExt"
+            "displayName": "Microsoft.Azure.Diagnostics.IaaSDiagnostics"
           },
           "properties": {
             "publisher": "Microsoft.Azure.Diagnostics",
@@ -630,8 +678,6 @@
         }
       ]
     }
-
-
   ],
   "outputs": {
   }
