@@ -66,7 +66,7 @@ if(!(Test-Path "C:\WindowsAzure\sharedConfig.done")){
     {
         Write-Verbose "$iisWASKey Check: NOT in sync with Farm, updating..."
         $wasKey = Join-Path $UNCPath $iisWASKey
-        & $env:windir\Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe -pi "iisWasKey" $wasKey -exp
+        & $env:windir\Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe -pi $iisWASKey $wasKey -exp
     }
  
     # Import iisConfigKey if needed
