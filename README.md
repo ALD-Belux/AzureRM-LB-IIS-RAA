@@ -11,10 +11,10 @@ Deploy an Azure Resource Manager Template with in a load balancing with IIS and 
 ## Prerequisites
 To be able to automate the Azure File Share creation we need to first create an Azure Automation with a webhook based on  [CreateFileShare.ps1](RPX-Pub/Scripts/CreateFileShare.ps1)
 
-## Components
+## Deployement
 There are three major components to achieve the result:
 
 1. The [json template](RPX-Pub/Templates/azuredeploy.json) deploy all the azure resources except the Azure File Share
-2. The [Azure Automation webhook](RPX-Pub/Scripts/CreateFileShare.ps1)
-3. The [DSC template](RPX-Pub/DSC/DSCExtConfiguration.ps1) (that trigger the webhook)
+2. The [Azure Automation webhook](RPX-Pub/Scripts/CreateFileShare.ps1) deploy the Azure File Share
+3. The [DSC template](RPX-Pub/DSC/DSCExtConfiguration.ps1) trigger the webhook, deploy IIS, DNS (forward to on premise DNS), RAA and IIS shared configuration
 
