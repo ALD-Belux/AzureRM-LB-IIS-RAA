@@ -5,3 +5,5 @@
 </a>
 
 Deploy an Azure Resource Manager Template with in a load balancing with IIS and Routing Application Request (RAA)
+
+![alt tag](RPXBluePrint.png)
