@@ -14,7 +14,7 @@ To be able to automate the Azure File Share creation we need to first create an 
 ## Components
 There are three major components to achieve the result:
 
-1. The json template deploy all the azure resources except the Azure File Share
-2. The Azure Automation webhook
-3. The DSC template (that trigger the webhook)
+1. The [json template](RPX-Pub/Templates/azuredeploy.json) deploy all the azure resources except the Azure File Share
+2. The [Azure Automation webhook](RPX-Pub/Scripts/CreateFileShare.ps1)
+3. The [DSC template](RPX-Pub/DSC/DSCExtConfiguration.ps1) (that trigger the webhook)
 
